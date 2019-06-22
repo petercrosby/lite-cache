@@ -1,5 +1,6 @@
 # lite-cache
 [![PyPi version](https://pypip.in/v/py-cache/badge.png)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/petercrosby/lite-cache/branch/develop/graph/badge.svg)](https://codecov.io/gh/petercrosby/lite-cache)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/lite-cache.svg?style=flat)](https://pypi.python.org/pypi/web_cache/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
 

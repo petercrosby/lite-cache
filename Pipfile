@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 setuptools = "*"
-coverage = "*"
 
 [dev-packages]
+coverage = "*"
+codecov = "*"
 
 [requires]
 python_version = "3"
