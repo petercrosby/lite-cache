@@ -25,6 +25,23 @@ Python3 module for caching data during a program's runtime, with optional persis
     $ pip3 install jsonlite-cache
     ````
 
+### Usage
+```python
+import jsonlite_cache
+
+# Create a new instance
+lite_cache = jsonlite_cache.LiteCache()
+
+
+
+```
+
+```python
+from jsonlite_cache import LiteCache
+
+# Set the client
+
+```
 ## Development
 This project uses `pipenv` for managing virtual-environments and Python3 dependencies  for development and testing.
 * **Reference**: https://pypi.org/project/pipenv/

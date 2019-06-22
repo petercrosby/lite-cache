@@ -1,10 +1,11 @@
 """
 Key-value storage with optional persistence for Python3 programs using SQLite3.
 
-jsonlite_cache/LiteCache.py
+lite_cache/LiteCache.py
 """
 
 import os
+import sys
 import json
 import shutil
 import logging
@@ -12,65 +13,80 @@ import logging
 from sqlite3 import Connection, IntegrityError
 
 
+DEFAULT_CACHE_NAME = 'litecache'
+DEFAULT_CACHE_DIRECTORY = os.path.join(os.path.expanduser('~'), '.local', DEFAULT_CACHE_NAME)
+DISABLE_PERSISTENT_CACHING = False
+
+
 class LiteCache:
     """
     LiteCache
     """
-    _create_sql = (
-        'CREATE TABLE IF NOT EXISTS entries '
-        '( key TEXT PRIMARY KEY, val BLOB )'
+    _CREATE_SQL = (
+        "CREATE TABLE IF NOT EXISTS entries ( key TEXT PRIMARY KEY, val BLOB )"
     )
-    _create_index = 'CREATE INDEX IF NOT EXISTS keyname_index ON entries (key)'
-    _get_sql = 'SELECT val FROM entries WHERE key = ?'
-    _dump_sql = 'SELECT * from entries'
-    _del_sql = 'DELETE FROM entries WHERE key = ?'
-    _set_sql = 'REPLACE INTO entries (key, val) VALUES (?, ?)'
-    _add_sql = 'INSERT INTO entries (key, val) VALUES (?, ?)'
-    _clear_sql = 'DELETE FROM entries'
+    _CREATE_INDEX = "CREATE INDEX IF NOT EXISTS keyname_index ON entries (key)"
+    _GET_SQL = "SELECT val FROM entries WHERE key = ?"
+    _DUMP_SQL = "SELECT * from entries"
+    _DEL_SQL = "DELETE FROM entries WHERE key = ?"
+    _SET_SQL = "REPLACE INTO entries (key, val) VALUES (?, ?)"
+    _ADD_SQL = "INSERT INTO entries (key, val) VALUES (?, ?)"
+    _CLEAR_SQL = "DELETE FROM entries"
 
-    connection = None
-    cache_dir = None
     cache_db = None
-    error_callback = None
+    connection = None
 
-    def __init__(self, app_name: str):
+    cache_directory = DEFAULT_CACHE_DIRECTORY
+    cache_name = DEFAULT_CACHE_NAME
+
+    def __init__(self, cache_directory: str = DEFAULT_CACHE_DIRECTORY, cache_name: str = DEFAULT_CACHE_NAME):
         """
 
         Args:
-            app_name: str -
+            cache_directory: str - Optional
+            cache_name: str - Optional
+
         """
-        assert app_name, 'app_name cannot be blank'
-        assert isinstance(app_name, str), 'app_name must be a string'
+        if not cache_directory:
+            cache_directory = DEFAULT_CACHE_DIRECTORY
 
-        # Set the app's cache directory path
-        cache_base_dir = os.path.join(os.path.expanduser('~'), '.py-cache')
-
-        # Check if the directory exists
-        if not os.path.isdir(cache_base_dir):
+        if not os.path.isdir(cache_directory):
             try:
                 # Create the directory
-                os.mkdir(cache_base_dir)
+                os.mkdir(cache_directory)
 
             except OSError as e:
                 logging.exception(e)
                 raise
 
-        # Set the cache db file
-        self.cache_dir = os.path.join(cache_base_dir, app_name)
+        if not cache_name:
+            cache_name = DEFAULT_CACHE_NAME
+
+        named_cache_directory = os.path.join(cache_directory, cache_name)
 
         # Check if the directory exists
-        if not os.path.isdir(self.cache_dir):
+        if not os.path.isdir(named_cache_directory):
             try:
                 # Create the directory
-                os.mkdir(self.cache_dir)
+                os.mkdir(named_cache_directory)
 
             except OSError as e:
                 logging.exception(e)
                 raise
 
-        # Set the cache db file path
-        cache_file = os.path.join(self.cache_dir, '{}.db'.format(app_name))
-        self.cache_db = cache_file
+        self.cache_directory = named_cache_directory
+        self.cache_name = cache_name
+        self.cache_db = os.path.join(self.cache_directory, '{}.db'.format(self.cache_name))
+
+        # Check if the directory exists
+        if not os.path.isdir(self.cache_directory):
+            try:
+                # Create the directory
+                os.mkdir(self.cache_directory)
+
+            except OSError as e:
+                logging.exception(e)
+                raise
 
     def flush(self) -> bool:
         """
@@ -81,7 +97,7 @@ class LiteCache:
         """
         with self._get_conn() as conn:
             try:
-                conn.execute(self._clear_sql)
+                conn.execute(self._CLEAR_SQL)
                 logging.debug('Cache Flushed')
                 return True
 

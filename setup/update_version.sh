@@ -14,23 +14,23 @@ function get_revision() {
     micro=`echo $1 | cut -d. -f3`
 
     if [[ "$2" = "major" ]]; then
-#      echo "Upgrading 'major' version..."
-      let "major++"
-      revision="$major.0.0"
-      echo "$revision"
+        # "Upgrading 'major' version..."
+        let "major++"
+        revision="$major.0.0"
+        echo "$revision"
     elif [[ "$2" = "minor" ]]; then
-#      echo "Upgrading 'minor' version..."
-      let "minor++"
-      revision="$major.$minor.0"
-      echo "$revision"
+        # "Upgrading 'minor' version..."
+        let "minor++"
+        revision="$major.$minor.0"
+        echo "$revision"
     elif [[ "$2" = "micro" ]]; then
-#      echo "Upgrading 'micro' version..."
-      let "micro++"
-      revision="$major.$minor.$micro"
-      echo "$revision"
+        #  "Upgrading 'micro' version..."
+        let "micro++"
+        revision="$major.$minor.$micro"
+        echo "$revision"
     else
-#      echo "Invalid level argument"
-      exit 1
+        # "Invalid level argument"
+        exit 1
     fi
 };
 
@@ -45,7 +45,6 @@ if [[ -z "$1" ]]
 else
   LEVEL=$1
 fi
-
 CURRENT=$(get_current_version)
 echo "Current VERSION ${CURRENT}"
 echo "------------------------------------"
@@ -53,11 +52,11 @@ REVISION=$(get_revision ${CURRENT} ${LEVEL})
 echo "Upgrading to ${REVISION}..."
 echo "------------------------------------"
 escaped=$( echo "__version__ = \""${REVISION}"\"" | sed -e 's/[\/&]/\\&/g' )
-sed -i '' -e "2s/.*/escaped/" jsonlite_cache/__init__.py
+sed -i '' -e "2s/.*/escaped/" lite_cache/__init__.py
 echo "Adding change..."
-git add jsonlite_cache/__init__.py
+git add lite_cache/__init__.py
 echo "Committing..."
 git commit -m "Version ${REVISION}"
 echo "Pushing tag..."
-git tag -m "Version ${REVISION}" ${REVISION}
+git tag ${REVISION} -m "Version ${REVISION}"
 echo "------------------------------------"
