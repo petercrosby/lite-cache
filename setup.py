@@ -99,7 +99,6 @@ setup(
     test_suite="tests",
     extras_require={
         'test': [
-            'pytest',
             'coverage',
         ],
     },

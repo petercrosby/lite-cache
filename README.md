@@ -3,6 +3,11 @@
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/lite-cache.svg?style=flat)](https://pypi.python.org/pypi/web_cache/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
 
+| Branch| Build Status  |
+| --- | --- | 
+|`master`| [![CircleCI](https://circleci.com/gh/petercrosby/lite-cache/tree/master.svg?style=svg)](https://circleci.com/gh/petercrosby/lite-cache/tree/master)|
+|`develop`| [![CircleCI](https://circleci.com/gh/petercrosby/lite-cache/tree/develop.svg?style=svg)](https://circleci.com/gh/petercrosby/lite-cache/tree/develop)|
+
 Simple sqlite key-value storage for Python3.
 
 Python3 module for caching data during a program's runtime, with optional persistence.
