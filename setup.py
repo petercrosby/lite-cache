@@ -1,5 +1,5 @@
 """
-jsonlite-cache
+lite-cache
 ----------
 Simple key-value cache for Python3 using SQLite3.
 
@@ -7,9 +7,9 @@ Referenced from: http://flask.pocoo.org/snippets/87/
 
 Links
 `````
-* `Docs <https://github.com/petercrosby/jsonlite-cache>`_
+* `Docs <https://github.com/petercrosby/lite-cache>`_
 * `SQLite Cache <http://flask.pocoo.org/snippets/87/>`_
-* `GitHub <https://github.com/petercrosby/jsonlite-cache>`_
+* `GitHub <https://github.com/petercrosby/lite-cache>`_
 
 """
 
@@ -22,7 +22,7 @@ from setuptools.command.install import install
 
 
 NAME = "lite-cache"
-project_url = "https://github.com/petercrosby/jsonlite-cache"
+project_url = "https://github.com/petercrosby/lite-cache"
 description = "Simple key-value cache for Python3 using SQLite3."
 keywords = ("python sqlite3 cache json setuptools")
 

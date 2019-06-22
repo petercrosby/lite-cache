@@ -1,7 +1,7 @@
-# jsonlite-cache
-[![PyPi version](https://pypip.in/v/py-cache/badge.png)](https://github.com/petercrosby/jsonlite_cache/blob/master/LICENSE)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/py-cache.svg?style=flat)](https://pypi.python.org/pypi/web_cache/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/petercrosby/jsonlite_cache/blob/master/LICENSE)
+# lite-cache
+[![PyPi version](https://pypip.in/v/py-cache/badge.png)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/lite-cache.svg?style=flat)](https://pypi.python.org/pypi/web_cache/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
 
 Simple sqlite key-value storage for Python3.
 
@@ -17,27 +17,27 @@ Python3 module for caching data during a program's runtime, with optional persis
 
 ## Installation (from PyPI, with PIP)
 
-`jsonlite-cache` requires [Python](https://www.python.org/downloads/) >= 3.5.
+`lite-cache` requires [Python](https://www.python.org/downloads/) >= 3.6.
 
 1. If not already installed, [install pip](https://pip.pypa.io/en/stable/installing/) for Python 3
-2. Install `jsonlite_cache`
+2. Install `lite_cache`
     ```bash
-    $ pip3 install jsonlite-cache
+    $ pip3 install lite-cache
     ````
 
 ### Usage
 ```python
-import jsonlite_cache
+import lite_cache
 
 # Create a new instance
-lite_cache = jsonlite_cache.LiteCache()
+lite_cache = lite_cache.LiteCache()
 
 
 
 ```
 
 ```python
-from jsonlite_cache import LiteCache
+from lite_cache import LiteCache
 
 # Set the client
 
