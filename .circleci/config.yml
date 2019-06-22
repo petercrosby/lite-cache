@@ -10,6 +10,7 @@ jobs:
       - restore_cache:  # ensure this step occurs *before* installing dependencies
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
+          name: Update dependencies
           command: |
             sudo pip install pipenv
             pipenv install
@@ -19,8 +20,22 @@ jobs:
             - ".venv"
             - "/usr/local/bin"
             - "/usr/local/lib/python3.6/site-packages"
+      - run:
+          name: Run Tests
+          command: |
+            pipenv run coverage run setup.py test
+            pipenv run coverage report
+            pipenv run coverage html
 workflows:
   version: 2
-  workflow:
+  build_and_deploy:
     jobs:
       - build
+      - test-python-install:
+          version: "3.6"
+          requires:
+            - build
+      - test-python-install:
+          version: "3.7"
+          requires:
+            - build
