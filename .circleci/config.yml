@@ -5,8 +5,10 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - restore_cache:  # ensure this step occurs *before* installing dependencies
-        key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
@@ -16,15 +18,7 @@ jobs:
           paths:
             - ".venv"
             - "/usr/local/bin"
-            - - "/usr/local/lib/python3.6/site-packages"
-      - run:
-          name: Setup testing environment
-          command: bash setup/setup_test_environment.sh
-      - run:
-          name: Run Tests
-          command: pipenv run python setup.py test
-      - store_artifacts:
-          path: htmlcov
+            - "/usr/local/lib/python3.6/site-packages"
 workflows:
   version: 2
   workflow:
