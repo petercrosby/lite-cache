@@ -118,8 +118,8 @@ class LiteCache:
         conn = Connection(self.cache_db)
 
         with conn:
-            conn.execute(self._create_sql)
-            conn.execute(self._create_index)
+            conn.execute(self._CREATE_SQL)
+            conn.execute(self._CREATE_INDEX)
             logging.debug('Ran the create table && index SQL.')
 
         # set the connection property
@@ -145,7 +145,7 @@ class LiteCache:
         # get a connection to run the lookup query with
         with self._get_conn() as conn:
             # loop the response rows looking for a result
-            for row in conn.execute(self._get_sql, (key,)):
+            for row in conn.execute(self._GET_SQL, (key,)):
                 return_value = json.loads(row[0])
                 break
 
@@ -165,7 +165,7 @@ class LiteCache:
         assert isinstance(key, str), 'key must be a string'
 
         with self._get_conn() as conn:
-            conn.execute(self._del_sql, (key,))
+            conn.execute(self._DEL_SQL, (key,))
 
     def update(self, key: str, value):
         """
@@ -186,7 +186,7 @@ class LiteCache:
 
         # write the updated value to the db
         with self._get_conn() as conn:
-            conn.execute(self._set_sql, (key, data))
+            conn.execute(self._SET_SQL, (key, data))
 
     def set(self, key: str, value):
         """
@@ -207,7 +207,7 @@ class LiteCache:
 
         with self._get_conn() as conn:
             try:
-                conn.execute(self._add_sql, (key, data))
+                conn.execute(self._ADD_SQL, (key, data))
             except IntegrityError as e:
                 logging.debug(e)
                 self.update(key, value)
@@ -221,19 +221,9 @@ class LiteCache:
         """
         res = []
         with self._get_conn() as conn:
-            for row in conn.execute(self._dump_sql,):
+            for row in conn.execute(self._DUMP_SQL,):
                 res.append(row)
         return res
-
-    def clear(self):
-        """
-        Clear a cache.
-
-        Returns:
-
-        """
-        with self._get_conn() as conn:
-            conn.execute(self._clear_sql,)
 
     def __del__(self):
         """
@@ -245,18 +235,18 @@ class LiteCache:
         if self.connection:
             self.connection.close()
 
-    def cleanup_app(self) -> bool:
+    def cleanup(self) -> bool:
         """
         Remove the cache database files and directory.
 
         Returns:
             bool:
         """
-        if not os.path.isdir(self.cache_dir):
+        if not os.path.isdir(self.cache_directory):
             return False
 
         try:
-            shutil.rmtree(self.cache_dir)
+            shutil.rmtree(self.cache_directory)
         except OSError as e:
             logging.exception(e)
             return False

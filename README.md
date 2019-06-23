@@ -54,6 +54,19 @@ This project uses `pipenv` for managing virtual-environments and Python3 depende
 
 The standard `requirements.txt` is included for installation via `setup.py`
 
+## Tests
+- Uses `unittests`
+
+Run all tests from `setup.py`
+```bash
+pipenv run python setup.py test
+```
+
+Run specific test
+```bash
+pipenv run python -m unittest tests/test_main.py
+```
+
 ## Plans
 - Interface for handling Python+Sqlite3 thread limitations.
 - Data compression options
