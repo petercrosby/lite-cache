@@ -3,12 +3,15 @@
 import logging
 import unittest
 
-from lite_cache.cache import cache
+import lite_cache
 from tests.mock import random_str, random_data
 
 
 class TestDefault(unittest.TestCase):
     def test_default(self):
+        # Init cache client
+        litecache = lite_cache.LiteCache(cache_name='test_default', persist=True)
+
         # Random key
         key = random_str(16)
         # Random data
@@ -16,24 +19,14 @@ class TestDefault(unittest.TestCase):
 
         # Run test routine
         # Ensure key is not already in cache
-        cached_data = cache.get(key)
+        cached_data = litecache.get(key)
         self.assertIsNone(cached_data)
 
         # Add the data to the cache at the key
-        cache.set(key, str(data))
+        litecache.set(key, str(data))
 
         # Check key is in cache
-        self.assertEquals(str(data), cache.get(key))
-
-        # Check cache size
-
-        # Remove the data at the key
-
-        # Check key is no longer in cache
-
-        # Check cache size
-
-        # Check other keys still exist in cache
+        self.assertEquals(str(data), litecache.get(key))
 
 
 if __name__ == "__main__":

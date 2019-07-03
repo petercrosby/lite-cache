@@ -3,20 +3,24 @@
 import logging
 import unittest
 
-from lite_cache.cache import cache
+import lite_cache
+
 from tests.mock import random_str, random_data
 
 
 class TestCacheMethods(unittest.TestCase):
     def test_method_props(self):
+        # Init cache client
+        litecache = lite_cache.LiteCache(cache_name='test_default')
+
         methods = ['set', 'get', 'update', 'delete', 'dump', 'flush', 'cleanup']
 
         for method in methods:
             # Ensure is an attribute
-            self.assertTrue(hasattr(cache, method))
+            self.assertTrue(hasattr(litecache, method))
 
             # Ensure attribute is callable
-            self.assertTrue(callable(getattr(cache, method)))
+            self.assertTrue(callable(getattr(litecache, method)))
 
     def test_method_calls(self):
         # Random key
