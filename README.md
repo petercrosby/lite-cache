@@ -5,7 +5,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/petercrosby/lite-cache/blob/master/LICENSE)
 
 | Branch| Build Status  |
-| --- | --- | 
+| --- | --- |
 |`master`| [![CircleCI](https://circleci.com/gh/petercrosby/lite-cache/tree/master.svg?style=svg)](https://circleci.com/gh/petercrosby/lite-cache/tree/master)|
 |`develop`| [![CircleCI](https://circleci.com/gh/petercrosby/lite-cache/tree/develop.svg?style=svg)](https://circleci.com/gh/petercrosby/lite-cache/tree/develop)|
 
@@ -15,11 +15,11 @@ Python3 module for caching data during a program's runtime, with optional persis
 
 ## Features
 
-* Program specific cache files.
+* Program specific cache.
 * Simple encoding of data using standard `json` package.
 * Optional persistence of data across multiple executions.
     - Useful for keeping some runtime data available to a program after a full exit.
-        - ex. `raise Exception` or `sys.exit()`, etc 
+        - ex. `raise Exception` or `sys.exit()`, etc
 
 ## Installation (from PyPI, with PIP)
 
@@ -32,22 +32,24 @@ Python3 module for caching data during a program's runtime, with optional persis
     ````
 
 ### Usage
-```python
+
+To use in default configuration:
+- Entire cache is in 1 database file, `~/.local/litecache/cache.db`
+
+To use in custom configuration:
+
+```Python3
 import lite_cache
 
-# Create a new instance
-lite_cache = lite_cache.LiteCache()
+program_cache = lite_cache.LiteCache(name='MyProgramCache', location='~/.local/litecache')
+# This initializes and creates a new Sqlite3 database file in `location` directory, named as "`name`.cache"
+# - If directory does not exist, error is raised.
 
-
-
+This strategy of having unique caches for each program is designed to navigate "same thread" or "single thread" issues with Python & Sqlite3.
+- This would not prevent issues occurring if multiple instances of the same program were launched on the same machine.
+  - ie. Executing same Python script in 2 terminal tabs. This would lead to two(2) threads attempting to access one(1) Sqlite3 with same `name`
 ```
 
-```python
-from lite_cache import LiteCache
-
-# Set the client
-
-```
 ## Development
 This project uses `pipenv` for managing virtual-environments and Python3 dependencies  for development and testing.
 * **Reference**: https://pypi.org/project/pipenv/
