@@ -85,7 +85,6 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Environment :: Console",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: SQL",
         "Natural Language :: English",
