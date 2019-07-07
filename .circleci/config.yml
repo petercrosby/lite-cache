@@ -23,14 +23,9 @@ jobs:
             - "/usr/local/lib/python3.6/site-packages"
       - run:
           name: Run Tests
-          command: |
-            pipenv run coverage run setup.py test
-            pipenv run coverage report
-            pipenv run coverage html
-            pipenv run codecov
+          command: bash setup/prod_tests.sh
 workflows:
   version: 2
   workflow:
     jobs:
     - build
-
