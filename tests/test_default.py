@@ -26,7 +26,7 @@ class TestDefault(unittest.TestCase):
         litecache.set(key, str(data))
 
         # Check key is in cache
-        self.assertEquals(str(data), litecache.get(key))
+        self.assertEqual(str(data), litecache.get(key))
 
 
 if __name__ == "__main__":

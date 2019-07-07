@@ -9,6 +9,8 @@ setuptools = "*"
 [dev-packages]
 coverage = "*"
 codecov = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3"

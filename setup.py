@@ -51,7 +51,7 @@ CLASSIFIERS = [
 ]
 PLATFORMS = ["linux", "linux2", "darwin"]
 
-with open(os.path.join(NAME, "__init__.py"), "rt") as f:
+with open(os.path.join(PACKAGE_NAME, "__init__.py"), "rt") as f:
     version = re.search("__version__ = \"([^\"]+)\"", f.read()).group(1)
 
 if sys.version_info < MIN_VERSION:
@@ -92,6 +92,7 @@ setup(
     version=version,
     description=DESCRIPTION,
     long_description=readme(),
+    long_description_content_type='text/markdown',
     author=AUTHOR_NAME,
     author_email=AUTHOR_EMAIL,
     maintainer=AUTHOR_EMAIL,
@@ -104,6 +105,9 @@ setup(
     platforms=PLATFORMS,
     packages=find_packages(exclude=("tests", "setup")),
     test_suite="tests",
+    setup_requires=[
+        "wheel", "twine"
+    ],
     extras_require={
         'test': [
             'unittests',
@@ -112,6 +116,6 @@ setup(
         ]
     },
     cmdclass={
-        'verify': VerifyVersionCommand,
+        "verify": VerifyVersionCommand,
     }
 )
