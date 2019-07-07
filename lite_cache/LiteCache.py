@@ -5,7 +5,6 @@ lite_cache/LiteCache.py
 """
 
 import os
-import sys
 import json
 import shutil
 import logging
@@ -13,9 +12,7 @@ import logging
 from sqlite3 import Connection, IntegrityError
 
 
-DEFAULT_CACHE_NAME = 'litecache'
-DEFAULT_CACHE_DIRECTORY = os.path.join(os.path.expanduser('~'), '.local', DEFAULT_CACHE_NAME)
-DISABLE_PERSISTENT_CACHING = False
+DEFAULT_CACHE_DIRECTORY = os.path.join(os.path.expanduser('~'), '.local', 'litecache')
 
 
 class LiteCache:
@@ -35,58 +32,56 @@ class LiteCache:
 
     cache_db = None
     connection = None
-
+    cache_name = None
     cache_directory = DEFAULT_CACHE_DIRECTORY
-    cache_name = DEFAULT_CACHE_NAME
+    persist = False
 
-    def __init__(self, cache_directory: str = DEFAULT_CACHE_DIRECTORY, cache_name: str = DEFAULT_CACHE_NAME):
+    def __init__(self, cache_name: str = '', cache_dir: str = DEFAULT_CACHE_DIRECTORY, persist: bool = False):
         """
 
         Args:
-            cache_directory: str - Optional
-            cache_name: str - Optional
+            cache_name: str - Required
+            cache_dir: str - Optional
+            persist: bool - Optional
 
         """
-        if not cache_directory:
-            cache_directory = DEFAULT_CACHE_DIRECTORY
+        assert cache_dir, 'cache_dir cannot be blank'
+        assert isinstance(cache_dir, str), 'cache_dir must be a string'
 
-        if not os.path.isdir(cache_directory):
+        assert cache_name, 'cache_name cannot be blank'
+        assert isinstance(cache_name, str), 'cache_name must be a string'
+
+        assert isinstance(persist, bool), 'persist must be a boolean'
+
+        # Ensure the cache directory exists
+        if not os.path.isdir(cache_dir):
             try:
                 # Create the directory
-                os.mkdir(cache_directory)
+                os.mkdir(cache_dir)
 
             except OSError as e:
                 logging.exception(e)
                 raise
-
-        if not cache_name:
-            cache_name = DEFAULT_CACHE_NAME
-
-        named_cache_directory = os.path.join(cache_directory, cache_name)
 
         # Check if the directory exists
-        if not os.path.isdir(named_cache_directory):
+        if not os.path.isdir(cache_dir):
             try:
                 # Create the directory
-                os.mkdir(named_cache_directory)
+                os.mkdir(cache_dir)
 
             except OSError as e:
                 logging.exception(e)
                 raise
 
-        self.cache_directory = named_cache_directory
+        self.cache_directory = cache_dir
         self.cache_name = cache_name
         self.cache_db = os.path.join(self.cache_directory, '{}.db'.format(self.cache_name))
+        self.persist = persist
 
-        # Check if the directory exists
-        if not os.path.isdir(self.cache_directory):
-            try:
-                # Create the directory
-                os.mkdir(self.cache_directory)
-
-            except OSError as e:
-                logging.exception(e)
-                raise
+        # Check if a cache db already exists
+        # if it does and persist=False, then cleanup
+        if not self.persist:
+            self.cleanup()
 
     def flush(self) -> bool:
         """
@@ -118,8 +113,8 @@ class LiteCache:
         conn = Connection(self.cache_db)
 
         with conn:
-            conn.execute(self._create_sql)
-            conn.execute(self._create_index)
+            conn.execute(self._CREATE_SQL)
+            conn.execute(self._CREATE_INDEX)
             logging.debug('Ran the create table && index SQL.')
 
         # set the connection property
@@ -145,7 +140,7 @@ class LiteCache:
         # get a connection to run the lookup query with
         with self._get_conn() as conn:
             # loop the response rows looking for a result
-            for row in conn.execute(self._get_sql, (key,)):
+            for row in conn.execute(self._GET_SQL, (key,)):
                 return_value = json.loads(row[0])
                 break
 
@@ -165,7 +160,7 @@ class LiteCache:
         assert isinstance(key, str), 'key must be a string'
 
         with self._get_conn() as conn:
-            conn.execute(self._del_sql, (key,))
+            conn.execute(self._DEL_SQL, (key,))
 
     def update(self, key: str, value):
         """
@@ -186,7 +181,7 @@ class LiteCache:
 
         # write the updated value to the db
         with self._get_conn() as conn:
-            conn.execute(self._set_sql, (key, data))
+            conn.execute(self._SET_SQL, (key, data))
 
     def set(self, key: str, value):
         """
@@ -207,7 +202,7 @@ class LiteCache:
 
         with self._get_conn() as conn:
             try:
-                conn.execute(self._add_sql, (key, data))
+                conn.execute(self._ADD_SQL, (key, data))
             except IntegrityError as e:
                 logging.debug(e)
                 self.update(key, value)
@@ -221,19 +216,9 @@ class LiteCache:
         """
         res = []
         with self._get_conn() as conn:
-            for row in conn.execute(self._dump_sql,):
+            for row in conn.execute(self._DUMP_SQL,):
                 res.append(row)
         return res
-
-    def clear(self):
-        """
-        Clear a cache.
-
-        Returns:
-
-        """
-        with self._get_conn() as conn:
-            conn.execute(self._clear_sql,)
 
     def __del__(self):
         """
@@ -245,20 +230,38 @@ class LiteCache:
         if self.connection:
             self.connection.close()
 
-    def cleanup_app(self) -> bool:
+    def purge(self) -> bool:
         """
-        Remove the cache database files and directory.
+        Remove the cache directory and all cache databases.
 
         Returns:
             bool:
         """
-        if not os.path.isdir(self.cache_dir):
+        if not os.path.isdir(self.cache_directory):
             return False
 
         try:
-            shutil.rmtree(self.cache_dir)
+            shutil.rmtree(self.cache_directory)
         except OSError as e:
             logging.exception(e)
             return False
         else:
             return True
+
+    def cleanup(self) -> bool:
+        """
+        Remove the cache database.
+
+        Returns:
+            bool:
+        """
+        if os.path.exists(self.cache_db):
+            try:
+                os.remove(self.cache_db)
+            except OSError as e:
+                logging.exception(e)
+                raise
+            else:
+                return True
+
+        return False

@@ -1,7 +1,14 @@
+# Mac OS files
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# pipenv
+*/venv*
+Pipfile.lock
 
 # JetBrains
 *.idea

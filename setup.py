@@ -1,5 +1,5 @@
 """
-jsonlite-cache
+lite-cache
 ----------
 Simple key-value cache for Python3 using SQLite3.
 
@@ -7,9 +7,9 @@ Referenced from: http://flask.pocoo.org/snippets/87/
 
 Links
 `````
-* `Docs <https://github.com/petercrosby/jsonlite-cache>`_
+* `Docs <https://github.com/petercrosby/lite-cache>`_
 * `SQLite Cache <http://flask.pocoo.org/snippets/87/>`_
-* `GitHub <https://github.com/petercrosby/jsonlite-cache>`_
+* `GitHub <https://github.com/petercrosby/lite-cache>`_
 
 """
 
@@ -22,16 +22,40 @@ from setuptools.command.install import install
 
 
 NAME = "lite-cache"
-project_url = "https://github.com/petercrosby/jsonlite-cache"
-description = "Simple key-value cache for Python3 using SQLite3."
-keywords = ("python sqlite3 cache json setuptools")
+PACKAGE_NAME = "lite_cache"
+LICENSE = "GPLv3"
+PROJECT_URL = "https://github.com/petercrosby/lite-cache"
+DESCRIPTION = "Simple key-value cache for Python3 using SQLite3."
+AUTHOR_NAME = 'Peter Crosby'
+AUTHOR_EMAIL = 'p.crosby25@gmail.com'
+KEYWORDS = ("python sqlite3 cache json setuptools")
+MIN_VERSION = (3, 6, 0)
+PYTHON_REQUIRES = ">=3.6.0"
+CLASSIFIERS = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: SQL",
+    "Natural Language :: English",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed"
+]
+PLATFORMS = ["linux", "linux2", "darwin"]
 
-
-with open(os.path.join("lite_cache", "__init__.py"), "rt") as f:
+with open(os.path.join(PACKAGE_NAME, "__init__.py"), "rt") as f:
     version = re.search("__version__ = \"([^\"]+)\"", f.read()).group(1)
 
-if sys.version_info < (3, 6, 0):
-    print('ERROR: {} requires at least Python 3.6.0 to run.'.format(NAME))
+if sys.version_info < MIN_VERSION:
+    print(f'ERROR: {NAME} requires at least Python {MIN_VERSION} to run.')
     sys.exit(1)
 
 # Set the requirements.txt file path, located next to setup.py
@@ -53,9 +77,7 @@ class VerifyVersionCommand(install):
         tag = os.getenv('CIRCLE_TAG')
 
         if tag != version:
-            info = "Git tag: {0} does not match the version of this app: {1}".format(
-                tag, version
-            )
+            info = f"Git tag: {tag} does not match the version of this app: {version}"
             sys.exit(info)
 
 
@@ -68,42 +90,32 @@ except (FileNotFoundError, IOError):
 setup(
     name=NAME,
     version=version,
-    description=description,
+    description=DESCRIPTION,
     long_description=readme(),
-    author="Peter Crosby",
-    author_email="p.crosby25@gmail.com",
-    maintainer="p.crosby25@gmail.com",
-    license="GPLv3",
-    url=project_url,
-    keywords=keywords,
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Environment :: Console",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: SQL",
-        "Natural Language :: English",
-        "Topic :: Database",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-    ],
+    long_description_content_type='text/markdown',
+    author=AUTHOR_NAME,
+    author_email=AUTHOR_EMAIL,
+    maintainer=AUTHOR_EMAIL,
+    license=LICENSE,
+    url=PROJECT_URL,
+    keywords=KEYWORDS,
+    classifiers=CLASSIFIERS,
     install_requires=requirements,
-    python_requires='>=3.6.0',
-    platforms=["linux", "linux2", "darwin"],
+    python_requires=PYTHON_REQUIRES,
+    platforms=PLATFORMS,
     packages=find_packages(exclude=("tests", "setup")),
     test_suite="tests",
+    setup_requires=[
+        "wheel", "twine"
+    ],
     extras_require={
         'test': [
-            'pytest',
+            'unittests',
             'coverage',
-        ],
+            'codecov'
+        ]
     },
     cmdclass={
-        'verify': VerifyVersionCommand,
+        "verify": VerifyVersionCommand,
     }
 )
