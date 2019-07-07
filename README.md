@@ -42,13 +42,16 @@ To use in custom configuration:
 import lite_cache
 
 program_cache = lite_cache.LiteCache(name='MyProgramCache', location='~/.local/litecache')
-# This initializes and creates a new Sqlite3 database file in `location` directory, named as "`name`.cache"
-# - If directory does not exist, error is raised.
+# This initializes and creates a new Sqlite3 database file in `location` directory,
+# named as "`name`.cache".
+# If directory does not exist, error is raised.
+
+```
 
 This strategy of having unique caches for each program is designed to navigate "same thread" or "single thread" issues with Python & Sqlite3.
 - This would not prevent issues occurring if multiple instances of the same program were launched on the same machine.
   - ie. Executing same Python script in 2 terminal tabs. This would lead to two(2) threads attempting to access one(1) Sqlite3 with same `name`
-```
+
 
 ## Development
 This project uses `pipenv` for managing virtual-environments and Python3 dependencies  for development and testing.
