@@ -1,4 +1,4 @@
 """__init__.py"""
-escaped
+__version__ = "0.1.3"
 
 from .LiteCache import LiteCache
